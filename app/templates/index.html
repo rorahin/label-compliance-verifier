@@ -3,29 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Alcohol Label Verification</title>
-    <link rel="stylesheet" href="/static/styles.css?v=2">
+
+    <link
+        rel="stylesheet"
+        href="/static/styles.css?v=3"
+    >
 </head>
 
 <body>
     <main class="container">
+
         <header>
             <h1>Alcohol Label Verification</h1>
-            <p>Verify alcohol label information against application data.</p>
+
+            <p>
+                Verify alcohol label information against application data.
+            </p>
         </header>
 
         <form
-        id="verification-form"
-        action="/verify"
-        method="post"
-        enctype="multipart/form-data"
+            id="verification-form"
+            action="/verify"
+            method="post"
+            enctype="multipart/form-data"
         >
+
             <div class="content-grid">
 
+                <!-- Application information -->
                 <section class="panel">
+
                     <h2>Application Information</h2>
 
-                    <label for="brand-name">Brand Name</label>
+                    <label for="brand-name">
+                        Brand Name
+                    </label>
+
                     <input
                         type="text"
                         id="brand-name"
@@ -34,7 +49,10 @@
                         required
                     >
 
-                    <label for="class-type">Class / Type</label>
+                    <label for="class-type">
+                        Class / Type
+                    </label>
+
                     <input
                         type="text"
                         id="class-type"
@@ -43,7 +61,10 @@
                         required
                     >
 
-                    <label for="alcohol-content">Alcohol Content</label>
+                    <label for="alcohol-content">
+                        Alcohol Content
+                    </label>
+
                     <input
                         type="text"
                         id="alcohol-content"
@@ -52,7 +73,10 @@
                         required
                     >
 
-                    <label for="net-contents">Net Contents</label>
+                    <label for="net-contents">
+                        Net Contents
+                    </label>
+
                     <input
                         type="text"
                         id="net-contents"
@@ -60,35 +84,135 @@
                         placeholder="750 mL"
                         required
                     >
+
                 </section>
 
+
+                <!-- Label images -->
                 <section class="panel">
-                    <h2>Label Image</h2>
 
-                    <label class="upload-area" for="label-image">
-                        <span>Choose a label image</span>
-                        <small>JPG, PNG, or WebP</small>
-                    </label>
+                    <h2>Label Images</h2>
 
-                    <input
-                        type="file"
-                        id="label-image"
-                        name="label_image"
-                        accept=".jpg,.jpeg,.png,.webp"
-                        required
-                    >
+                    <p class="upload-help">
+                        Upload the main label and, if needed,
+                        a back or secondary label.
+                    </p>
 
-                    <div id="preview-container">
-                        <img id="image-preview" alt="Selected label preview">
+
+                    <!-- PRIMARY IMAGE -->
+                    <div class="upload-section">
+
+                        <div class="upload-title">
+                            Primary Label
+                            <span class="required-text">
+                                Required
+                            </span>
+                        </div>
+
+                        <label
+                            class="upload-area"
+                            id="primary-upload-area"
+                            for="label-image"
+                        >
+                            <span class="upload-main-text">
+                                Choose primary label image
+                            </span>
+
+                            <small>
+                                Front or main label
+                            </small>
+
+                            <small>
+                                JPG, PNG, or WebP
+                            </small>
+                        </label>
+
+                        <input
+                            type="file"
+                            id="label-image"
+                            name="label_image"
+                            accept=".jpg,.jpeg,.png,.webp"
+                            required
+                        >
+
+                        <div class="preview-container">
+                            <img
+                                id="primary-image-preview"
+                                class="image-preview"
+                                alt="Primary label preview"
+                            >
+
+                            <p
+                                id="primary-file-name"
+                                class="file-name"
+                            ></p>
+                        </div>
+
                     </div>
+
+
+                    <!-- ADDITIONAL IMAGE -->
+                    <div class="upload-section">
+
+                        <div class="upload-title">
+                            Additional Label
+                            <span class="optional-text">
+                                Optional
+                            </span>
+                        </div>
+
+                        <label
+                            class="upload-area"
+                            id="additional-upload-area"
+                            for="additional-label-image"
+                        >
+                            <span class="upload-main-text">
+                                Choose additional label image
+                            </span>
+
+                            <small>
+                                Back or secondary label
+                            </small>
+
+                            <small>
+                                JPG, PNG, or WebP
+                            </small>
+                        </label>
+
+                        <input
+                            type="file"
+                            id="additional-label-image"
+                            name="additional_label_image"
+                            accept=".jpg,.jpeg,.png,.webp"
+                        >
+
+                        <div class="preview-container">
+                            <img
+                                id="additional-image-preview"
+                                class="image-preview"
+                                alt="Additional label preview"
+                            >
+
+                            <p
+                                id="additional-file-name"
+                                class="file-name"
+                            ></p>
+                        </div>
+
+                    </div>
+
                 </section>
 
             </div>
 
-            <button type="submit">Verify Label</button>
+            <button type="submit">
+                Verify Label
+            </button>
+
         </form>
+
     </main>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=3"></script>
 </body>
 </html>

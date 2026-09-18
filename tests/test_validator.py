@@ -12,7 +12,8 @@ VALID_WARNING = (
     "alcoholic beverages during pregnancy because of the risk of "
     "birth defects. "
     "(2) Consumption of alcoholic beverages impairs your ability "
-    "to drive a car or operate machinery, and may cause health problems."
+    "to drive a car or operate machinery, and may cause health "
+    "problems."
 )
 
 
@@ -35,37 +36,55 @@ def test_brand_name_fails_when_missing():
 
 
 def test_abv_pass():
-    result = validate_abv("45%", 45.0)
+    result = validate_abv(
+        "45%",
+        45.0,
+    )
 
     assert result["status"] == "PASS"
 
 
 def test_abv_fail():
-    result = validate_abv("40%", 45.0)
+    result = validate_abv(
+        "40%",
+        45.0,
+    )
 
     assert result["status"] == "FAIL"
 
 
 def test_abv_review_when_not_detected():
-    result = validate_abv("45%", None)
+    result = validate_abv(
+        "45%",
+        None,
+    )
 
     assert result["status"] == "REVIEW"
 
 
 def test_net_contents_pass_same_units():
-    result = validate_net_contents("750 mL", 750)
+    result = validate_net_contents(
+        "750 mL",
+        750,
+    )
 
     assert result["status"] == "PASS"
 
 
 def test_net_contents_pass_equivalent_units():
-    result = validate_net_contents("0.75 L", 750)
+    result = validate_net_contents(
+        "0.75 L",
+        750,
+    )
 
     assert result["status"] == "PASS"
 
 
 def test_net_contents_fail():
-    result = validate_net_contents("1 L", 750)
+    result = validate_net_contents(
+        "1 L",
+        750,
+    )
 
     assert result["status"] == "FAIL"
 
@@ -174,13 +193,14 @@ def test_low_confidence_net_contents_goes_to_review():
     assert result["status"] == "REVIEW"
 
 
-def test_low_confidence_warning_goes_to_review():
+def test_exact_warning_passes_despite_low_confidence():
     ocr_lines = [
         {
             "text": (
                 "GOVERNMENT WARNING: "
-                "(1) According to the Surgeon General, women should not drink "
-                "alcoholic beverages during pregnancy because of the risk of "
+                "(1) According to the Surgeon General, "
+                "women should not drink alcoholic beverages "
+                "during pregnancy because of the risk of "
                 "birth defects."
             ),
             "confidence": 0.70,
@@ -188,13 +208,37 @@ def test_low_confidence_warning_goes_to_review():
         },
         {
             "text": (
-                "(2) Consumption of alcoholic beverages impairs "
-                "your ability to drive a car or operate machinery, "
-                "and may cause health problems."
+                "(2) Consumption of alcoholic beverages "
+                "impairs your ability to drive a car or "
+                "operate machinery, and may cause health "
+                "problems."
             ),
             "confidence": 0.99,
             "low_confidence": False,
         },
+    ]
+
+    ocr_text = " ".join(line["text"] for line in ocr_lines)
+
+    result = validate_warning(
+        ocr_text,
+        ocr_lines,
+    )
+
+    assert result["status"] == "PASS"
+
+
+def test_inexact_low_confidence_warning_goes_to_review():
+    ocr_lines = [
+        {
+            "text": (
+                "GOVERNMENT WARNING: "
+                "(1) According to the Surgeon General, "
+                "women should avoid alcoholic beverages."
+            ),
+            "confidence": 0.70,
+            "low_confidence": True,
+        }
     ]
 
     ocr_text = " ".join(line["text"] for line in ocr_lines)

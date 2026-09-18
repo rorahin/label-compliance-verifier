@@ -23,6 +23,23 @@ def normalize_for_comparison(text: str) -> str:
     return text.strip()
 
 
+def normalize_warning_text(text: str) -> str:
+    """
+    Normalize harmless OCR whitespace differences while
+    preserving warning punctuation and wording.
+    """
+    text = normalize_text(text)
+
+    # OCR may remove or add spaces around punctuation.
+    text = re.sub(
+        r"\s*([:,.()])\s*",
+        r"\1",
+        text,
+    )
+
+    return text.strip()
+
+
 def has_low_confidence_line(ocr_lines) -> bool:
     """
     Return True if any OCR line was marked low-confidence.
@@ -304,6 +321,11 @@ def validate_warning(
     """
     Validate OCR-readable Government Warning wording.
 
+    Exact wording is checked before OCR confidence because
+    confidence is only an uncertainty signal. If the complete
+    required text was successfully extracted, the wording can
+    be verified automatically.
+
     Visual formatting such as bold type, type size,
     contrast, and placement remain outside the prototype.
     """
@@ -329,36 +351,42 @@ def validate_warning(
 
         return {
             "status": "FAIL",
-            "message": "Government Warning was not found.",
+            "message": ("Government Warning was not found."),
         }
 
+    expected_normalized = normalize_warning_text(expected_warning)
+
+    actual_normalized = normalize_warning_text(actual_warning)
+
+    # First determine whether the required wording
+    # was actually recovered by OCR.
+    if expected_normalized in actual_normalized:
+        return {
+            "status": "PASS",
+            "message": ("Government Warning wording matches."),
+            "formatting_note": (
+                "Bold type, type size, contrast, and placement "
+                "are not verified by this prototype."
+            ),
+        }
+
+    # If the wording does not match but OCR itself was
+    # uncertain, route the case to human review rather
+    # than automatically failing it.
     if warning_is_low_confidence(ocr_lines):
         return {
             "status": "REVIEW",
             "message": (
                 "Government Warning was detected, but OCR "
-                "confidence is too low for automatic verification."
-            ),
-        }
-
-    expected_normalized = normalize_text(expected_warning)
-
-    actual_normalized = normalize_text(actual_warning)
-
-    if expected_normalized not in actual_normalized:
-        return {
-            "status": "FAIL",
-            "message": (
-                "Government Warning wording does not match the required text."
+                "confidence is too low to determine whether "
+                "the wording is compliant."
             ),
         }
 
     return {
-        "status": "PASS",
-        "message": "Government Warning wording matches.",
-        "formatting_note": (
-            "Bold type, type size, contrast, and placement "
-            "are not verified by this prototype."
+        "status": "FAIL",
+        "message": (
+            "Government Warning wording does not match the required text."
         ),
     }
 
