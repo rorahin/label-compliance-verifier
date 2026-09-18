@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Result</title>
+    <link rel="stylesheet" href="/static/styles.css?v=2">
+</head>
+
+<body>
+    <main class="container">
+
+        <header>
+            <h1>Label Verification Result</h1>
+            <p>Comparison of application information against the uploaded label.</p>
+        </header>
+
+        <section class="result-summary {{ overall_status | lower }}">
+            <div class="result-status">
+                {{ overall_status }}
+            </div>
+
+            {% if overall_status == "PASS" %}
+                <h2>Label information matches the application.</h2>
+            {% elif overall_status == "FAIL" %}
+                <h2>One or more discrepancies were found.</h2>
+            {% else %}
+                <h2>Some information requires manual review.</h2>
+            {% endif %}
+
+            <p>
+                Processed in {{ request_seconds }} seconds.
+            </p>
+        </section>
+
+
+        <section class="results-panel">
+            <h2>Verification Details</h2>
+
+            <div class="result-row">
+                <div>
+                    <strong>Brand Name</strong>
+                    <p>{{ validation.brand_name.message }}</p>
+                </div>
+
+                <span class="status-badge {{ validation.brand_name.status | lower }}">
+                    {{ validation.brand_name.status }}
+                </span>
+            </div>
+
+
+            <div class="result-row">
+                <div>
+                    <strong>Class / Type</strong>
+                    <p>{{ validation.class_type.message }}</p>
+                </div>
+
+                <span class="status-badge {{ validation.class_type.status | lower }}">
+                    {{ validation.class_type.status }}
+                </span>
+            </div>
+
+
+            <div class="result-row">
+                <div>
+                    <strong>Alcohol Content</strong>
+
+                    <p>
+                        Expected:
+                        {{ validation.alcohol_content.expected }}%
+                        |
+                        Detected:
+                        {{ validation.alcohol_content.detected }}%
+                    </p>
+                </div>
+
+                <span class="status-badge {{ validation.alcohol_content.status | lower }}">
+                    {{ validation.alcohol_content.status }}
+                </span>
+            </div>
+
+
+            <div class="result-row">
+                <div>
+                    <strong>Net Contents</strong>
+
+                    <p>
+                        Expected:
+                        {{ validation.net_contents.expected_ml }} mL
+                        |
+                        Detected:
+                        {{ validation.net_contents.detected_ml }} mL
+                    </p>
+                </div>
+
+                <span class="status-badge {{ validation.net_contents.status | lower }}">
+                    {{ validation.net_contents.status }}
+                </span>
+            </div>
+
+
+            <div class="result-row">
+                <div>
+                    <strong>Government Warning</strong>
+                    <p>{{ validation.government_warning.message }}</p>
+
+                    {% if validation.government_warning.formatting_note %}
+                        <small>
+                            {{ validation.government_warning.formatting_note }}
+                        </small>
+                    {% endif %}
+                </div>
+
+                <span class="status-badge {{ validation.government_warning.status | lower }}">
+                    {{ validation.government_warning.status }}
+                </span>
+            </div>
+
+        </section>
+
+
+        <details class="ocr-details">
+            <summary>View extracted label text</summary>
+
+            <div class="ocr-text">
+                {{ ocr_text }}
+            </div>
+        </details>
+
+
+        <a class="secondary-button" href="/">
+            Verify Another Label
+        </a>
+
+    </main>
+</body>
+</html>

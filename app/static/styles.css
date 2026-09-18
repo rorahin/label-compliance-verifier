@@ -118,3 +118,168 @@ button:hover {
         padding: 25px;
     }
 }
+
+/* ---------- Verification Results ---------- */
+
+.result-summary {
+    margin: 30px 0;
+    padding: 28px;
+    border-radius: 10px;
+}
+
+.result-summary.pass {
+    background: #ecfdf3;
+    border: 1px solid #abefc6;
+}
+
+.result-summary.fail {
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+}
+
+.result-summary.review {
+    background: #fffaeb;
+    border: 1px solid #fedf89;
+}
+
+.result-status {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.result-summary.pass .result-status {
+    background: #dcfae6;
+    color: #067647;
+}
+
+.result-summary.fail .result-status {
+    background: #fee4e2;
+    color: #b42318;
+}
+
+.result-summary.review .result-status {
+    background: #fef0c7;
+    color: #b54708;
+}
+
+.result-summary h2 {
+    margin: 5px 0 10px;
+}
+
+.results-panel {
+    margin-top: 25px;
+    border: 1px solid #d8dde5;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.results-panel > h2 {
+    margin: 0;
+    padding: 22px;
+    background: #f8fafc;
+    border-bottom: 1px solid #d8dde5;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 22px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-row strong {
+    font-size: 16px;
+}
+
+.result-row p {
+    margin: 6px 0 0;
+    color: #667085;
+}
+
+.result-row small {
+    display: block;
+    margin-top: 8px;
+    color: #667085;
+    line-height: 1.4;
+}
+
+.status-badge {
+    flex-shrink: 0;
+    min-width: 82px;
+    padding: 7px 12px;
+    text-align: center;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-badge.pass {
+    background: #dcfae6;
+    color: #067647;
+}
+
+.status-badge.fail {
+    background: #fee4e2;
+    color: #b42318;
+}
+
+.status-badge.review {
+    background: #fef0c7;
+    color: #b54708;
+}
+
+.ocr-details {
+    margin-top: 25px;
+    padding: 18px 20px;
+    border: 1px solid #d8dde5;
+    border-radius: 8px;
+}
+
+.ocr-details summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.ocr-text {
+    margin-top: 15px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 6px;
+    line-height: 1.6;
+    color: #475467;
+}
+
+.secondary-button {
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border: 1px solid #1f2937;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.secondary-button:hover {
+    background: #f3f4f6;
+}
+
+@media (max-width: 700px) {
+    .result-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
