@@ -1,11 +1,10 @@
 from app.validator import (
+    determine_overall_status,
     validate_abv,
     validate_net_contents,
     validate_text_field,
     validate_warning,
-    determine_overall_status,
 )
-
 
 VALID_WARNING = (
     "GOVERNMENT WARNING: "
@@ -86,9 +85,7 @@ def test_incomplete_government_warning_fails():
 
 
 def test_missing_government_warning_fails():
-    result = validate_warning(
-        "OLD TOM DISTILLERY 45% ALC./VOL."
-    )
+    result = validate_warning("OLD TOM DISTILLERY 45% ALC./VOL.")
 
     assert result["status"] == "FAIL"
 
@@ -118,6 +115,105 @@ def test_overall_review():
         "brand": {"status": "PASS"},
         "abv": {"status": "REVIEW"},
         "warning": {"status": "PASS"},
+    }
+
+    assert determine_overall_status(fields) == "REVIEW"
+
+
+def test_low_confidence_brand_goes_to_review():
+    ocr_lines = [
+        {
+            "text": "OLD TOM DISTILLERY",
+            "confidence": 0.70,
+            "low_confidence": True,
+        }
+    ]
+
+    result = validate_text_field(
+        "OLD TOM DISTILLERY",
+        "OLD TOM DISTILLERY",
+        ocr_lines,
+    )
+
+    assert result["status"] == "REVIEW"
+
+
+def test_low_confidence_abv_goes_to_review():
+    ocr_lines = [
+        {
+            "text": "45% Alc./Vol.",
+            "confidence": 0.70,
+            "low_confidence": True,
+        }
+    ]
+
+    result = validate_abv(
+        "45%",
+        45.0,
+        ocr_lines,
+    )
+
+    assert result["status"] == "REVIEW"
+
+
+def test_low_confidence_net_contents_goes_to_review():
+    ocr_lines = [
+        {
+            "text": "750 mL",
+            "confidence": 0.70,
+            "low_confidence": True,
+        }
+    ]
+
+    result = validate_net_contents(
+        "750 mL",
+        750,
+        ocr_lines,
+    )
+
+    assert result["status"] == "REVIEW"
+
+
+def test_low_confidence_warning_goes_to_review():
+    ocr_lines = [
+        {
+            "text": (
+                "GOVERNMENT WARNING: "
+                "(1) According to the Surgeon General, women should not drink "
+                "alcoholic beverages during pregnancy because of the risk of "
+                "birth defects."
+            ),
+            "confidence": 0.70,
+            "low_confidence": True,
+        },
+        {
+            "text": (
+                "(2) Consumption of alcoholic beverages impairs "
+                "your ability to drive a car or operate machinery, "
+                "and may cause health problems."
+            ),
+            "confidence": 0.99,
+            "low_confidence": False,
+        },
+    ]
+
+    ocr_text = " ".join(line["text"] for line in ocr_lines)
+
+    result = validate_warning(
+        ocr_text,
+        ocr_lines,
+    )
+
+    assert result["status"] == "REVIEW"
+
+
+def test_overall_review_when_one_field_has_low_confidence():
+    fields = {
+        "brand_name": {"status": "PASS"},
+        "class_type": {"status": "PASS"},
+        "alcohol_content": {"status": "REVIEW"},
+        "net_contents": {"status": "PASS"},
+        "government_warning": {"status": "PASS"},
     }
 
     assert determine_overall_status(fields) == "REVIEW"

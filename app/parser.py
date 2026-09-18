@@ -23,10 +23,7 @@ def extract_abv(text: str):
     """
     text = normalize_text(text)
 
-    match = re.search(
-        r"(\d+(?:\.\d+)?)\s*%",
-        text
-    )
+    match = re.search(r"(\d+(?:\.\d+)?)\s*%", text)
 
     if not match:
         return None
@@ -45,10 +42,7 @@ def extract_net_contents(text: str):
     """
     text = normalize_text(text)
 
-    match = re.search(
-        r"(\d+(?:\.\d+)?)\s*(ML|L)\b",
-        text
-    )
+    match = re.search(r"(\d+(?:\.\d+)?)\s*(ML|L)\b", text)
 
     if not match:
         return None

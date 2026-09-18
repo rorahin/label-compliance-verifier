@@ -1,9 +1,9 @@
 from app.parser import (
-    normalize_text,
-    extract_abv,
-    extract_net_contents,
     detect_government_warning,
+    extract_abv,
     extract_government_warning,
+    extract_net_contents,
+    normalize_text,
 )
 
 
@@ -47,10 +47,7 @@ def test_government_warning_missing():
 
 
 def test_extract_government_warning():
-    text = (
-        "OLD TOM DISTILLERY "
-        "GOVERNMENT WARNING: Example warning."
-    )
+    text = "OLD TOM DISTILLERY GOVERNMENT WARNING: Example warning."
 
     assert extract_government_warning(text) == (
         "GOVERNMENT WARNING: EXAMPLE WARNING."

@@ -6,12 +6,12 @@ import numpy as np
 from PIL import Image, ImageOps
 from rapidocr import RapidOCR
 
+from app.config import (
+    MAX_IMAGE_DIMENSION,
+    MIN_OCR_CONFIDENCE,
+)
 
-# Load OCR models once when the server starts.
 ocr_engine = RapidOCR()
-
-# Large images slow OCR without necessarily improving recognition.
-MAX_IMAGE_DIMENSION = 1600
 
 
 def prepare_image(image_bytes: bytes):
@@ -20,11 +20,7 @@ def prepare_image(image_bytes: bytes):
     Large images are resized while preserving aspect ratio.
     """
     image = Image.open(BytesIO(image_bytes))
-
-    # Correct camera/phone orientation.
     image = ImageOps.exif_transpose(image)
-
-    # Normalize color mode.
     image = image.convert("RGB")
 
     width, height = image.size
@@ -38,7 +34,7 @@ def prepare_image(image_bytes: bytes):
 
         image = image.resize(
             (new_width, new_height),
-            Image.Resampling.LANCZOS
+            Image.Resampling.LANCZOS,
         )
 
     return image
@@ -54,12 +50,11 @@ def extract_text_from_bytes(image_bytes: bytes):
 
     processed_width, processed_height = image.size
 
-    # Convert PIL RGB image to OpenCV BGR format.
     image_array = np.array(image)
 
     image_array = cv2.cvtColor(
         image_array,
-        cv2.COLOR_RGB2BGR
+        cv2.COLOR_RGB2BGR,
     )
 
     result = ocr_engine(image_array)
@@ -71,12 +66,17 @@ def extract_text_from_bytes(image_bytes: bytes):
     if result.txts:
         for text, score in zip(
             result.txts,
-            result.scores
+            result.scores,
         ):
-            lines.append({
-                "text": text,
-                "confidence": float(score)
-            })
+            confidence = float(score)
+
+            lines.append(
+                {
+                    "text": text,
+                    "confidence": confidence,
+                    "low_confidence": (confidence < MIN_OCR_CONFIDENCE),
+                }
+            )
 
     return {
         "lines": lines,
