@@ -261,3 +261,14 @@ def test_overall_review_when_one_field_has_low_confidence():
     }
 
     assert determine_overall_status(fields) == "REVIEW"
+
+
+def test_title_case_government_warning_heading_fails():
+    warning = VALID_WARNING.replace(
+        "GOVERNMENT WARNING:",
+        "Government Warning:",
+    )
+
+    result = validate_warning(warning)
+
+    assert result["status"] == "FAIL"

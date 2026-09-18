@@ -337,6 +337,36 @@ def validate_warning(
             "message": ("Government Warning reference could not be loaded."),
         }
 
+    exact_heading = re.search(
+        r"\bGOVERNMENT\s+WARNING\s*:",
+        ocr_text,
+    )
+
+    any_heading = re.search(
+        r"\bgovernment\s+warning\s*:",
+        ocr_text,
+        re.IGNORECASE,
+    )
+
+    if any_heading and not exact_heading:
+        if warning_is_low_confidence(ocr_lines):
+            return {
+                "status": "REVIEW",
+                "message": (
+                    "Government Warning heading was detected, "
+                    "but capitalization could not be confidently "
+                    "verified."
+                ),
+            }
+
+        return {
+            "status": "FAIL",
+            "message": (
+                "Government Warning heading must be uppercase: "
+                "'GOVERNMENT WARNING:'."
+            ),
+        }
+
     actual_warning = extract_government_warning(ocr_text)
 
     if actual_warning is None:
