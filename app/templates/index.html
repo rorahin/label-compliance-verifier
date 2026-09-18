@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcohol Label Verification</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <main class="container">
+        <header>
+            <h1>Alcohol Label Verification</h1>
+            <p>Verify alcohol label information against application data.</p>
+        </header>
+
+        <form
+        id="verification-form"
+        action="/verify"
+        method="post"
+        enctype="multipart/form-data"
+        >
+            <div class="content-grid">
+
+                <section class="panel">
+                    <h2>Application Information</h2>
+
+                    <label for="brand-name">Brand Name</label>
+                    <input
+                        type="text"
+                        id="brand-name"
+                        name="brand_name"
+                        placeholder="OLD TOM DISTILLERY"
+                        required
+                    >
+
+                    <label for="class-type">Class / Type</label>
+                    <input
+                        type="text"
+                        id="class-type"
+                        name="class_type"
+                        placeholder="Kentucky Straight Bourbon Whiskey"
+                        required
+                    >
+
+                    <label for="alcohol-content">Alcohol Content</label>
+                    <input
+                        type="text"
+                        id="alcohol-content"
+                        name="alcohol_content"
+                        placeholder="45%"
+                        required
+                    >
+
+                    <label for="net-contents">Net Contents</label>
+                    <input
+                        type="text"
+                        id="net-contents"
+                        name="net_contents"
+                        placeholder="750 mL"
+                        required
+                    >
+                </section>
+
+                <section class="panel">
+                    <h2>Label Image</h2>
+
+                    <label class="upload-area" for="label-image">
+                        <span>Choose a label image</span>
+                        <small>JPG, PNG, or WebP</small>
+                    </label>
+
+                    <input
+                        type="file"
+                        id="label-image"
+                        name="label_image"
+                        accept=".jpg,.jpeg,.png,.webp"
+                        required
+                    >
+
+                    <div id="preview-container">
+                        <img id="image-preview" alt="Selected label preview">
+                    </div>
+                </section>
+
+            </div>
+
+            <button type="submit">Verify Label</button>
+        </form>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
